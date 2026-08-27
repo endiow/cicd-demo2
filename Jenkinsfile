@@ -8,14 +8,10 @@ pipeline {
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '5'))
+        // 关闭流水线自动checkout，如果你想自己手动控制git拉取，开启下面这行；二选一
+        // skipDefaultCheckout true
     }
     stages {
-        stage('拉取代码') {
-            steps {
-                deleteDir()
-                git url: 'git@github.com:endiow/cicd-demo2.git', credentialsId: 'git-ssh-key'
-            }
-        }
         stage('构建镜像') {
             steps {
                 sh "docker build -t ${IMAGE} ."
@@ -39,6 +35,8 @@ pipeline {
         }
     }
     post {
-        always { deleteDir() }
+        always { 
+            deleteDir() 
+        }
     }
 }
