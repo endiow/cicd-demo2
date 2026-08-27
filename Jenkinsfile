@@ -8,21 +8,19 @@ pipeline {
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '5'))
-        // 关闭流水线自动checkout，如果你想自己手动控制git拉取，开启下面这行；二选一
-        // skipDefaultCheckout true
     }
     stages {
         stage('构建镜像') {
             steps {
-                sh "docker build -t ${IMAGE} ."
+                sh "/usr/bin/docker build -t ${IMAGE} ."
             }
         }
         stage('推送Harbor') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'harbor-auth', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
                     sh '''
-                    docker login ${HARBOR_URL} -u ${USER} -p ${PWD}
-                    docker push ${IMAGE}
+                    /usr/bin/docker login ${HARBOR_URL} -u ${USER} -p ${PWD}
+                    /usr/bin/docker push ${IMAGE}
                     '''
                 }
             }
@@ -35,8 +33,6 @@ pipeline {
         }
     }
     post {
-        always { 
-            deleteDir() 
-        }
+        always { deleteDir() }
     }
 }
