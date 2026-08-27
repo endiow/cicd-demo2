@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('拉取代码') {
             steps {
-                cleanWs()
+                deleteDir()
                 git url: 'git@github.com:endiow/cicd-demo2.git', credentialsId: 'git-ssh-key'
             }
         }
@@ -39,6 +39,6 @@ pipeline {
         }
     }
     post {
-        always { cleanWs() }
+        always { deleteDir() }
     }
 }
