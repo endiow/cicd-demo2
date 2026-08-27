@@ -27,8 +27,10 @@ pipeline {
         }
         stage('部署K3s') {
             steps {
-                sh "kubectl apply -f k8s-deploy.yaml"
-                sh "kubectl rollout restart deployment cicd-demo"
+                sh """
+                kubectl apply -f k8s-deploy.yaml
+                kubectl rollout restart deployment cicd-demo || true
+                """
             }
         }
     }
