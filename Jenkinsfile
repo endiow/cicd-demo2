@@ -28,9 +28,11 @@ pipeline {
         stage('部署K3s') {
             steps {
                 sh """
-                kubectl apply -f k8s-deploy.yaml
-                kubectl rollout restart deployment cicd-demo || true
-                """
+# 替换yaml内镜像为本次构建版本
+sed -i "s|image: .*|image: ${IMAGE}|g" k8s-deploy.yaml
+kubectl --kubeconfig=/var/jenkins_home/.kube/config apply -f k8s-deploy.yaml
+kubectl --kubeconfig=/var/jenkins_home/.kube/config rollout restart deployment cicd-demo || true
+"""
             }
         }
     }
