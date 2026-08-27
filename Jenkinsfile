@@ -18,10 +18,10 @@ pipeline {
         stage('推送Harbor') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'harbor-auth', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
-                    sh '''
+                    sh """
                     /usr/bin/docker login ${HARBOR_URL} -u ${USER} -p ${PWD}
                     /usr/bin/docker push ${IMAGE}
-                    '''
+                    """
                 }
             }
         }
